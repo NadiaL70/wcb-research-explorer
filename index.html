@@ -851,7 +851,17 @@ const discoveries = [
 
     // Optional: start with an initial card (uncomment to auto-reveal on load)
     // discoverNext();
+// Wire up UI
+  document.addEventListener("DOMContentLoaded", function () {
 
+  document.getElementById("discoverBtn").addEventListener("click", () => discoverNext({surprise:false}));
+  document.getElementById("surpriseBtn").addEventListener("click", () => discoverNext({surprise:true}));
+  document.getElementById("resetBtn").addEventListener("click", resetProgress);
+
+  setText();
+
+});
   </script>
 </body>
 </html>
+
