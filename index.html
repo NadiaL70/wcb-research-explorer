@@ -493,10 +493,7 @@
           </p>
         </div>
 
-        <div class="panel">
-          <h2>Playful prompts</h2>
-          <p id="promptLine">“Keep going—your next favorite idea might be one click away.”</p>
-        </div>
+
       </aside>
     </section>
   </main>
@@ -616,252 +613,104 @@ const discoveries = [
 {title: "Working Harder to Walk Slower: Treadmill-Based Gait Assessment Systematically Underestimates Overground Performance in Older Adults", topic: "Clinical Biomechanics: N/A", institution: "Auburn University"}
 ];
 
-const discoveries = [
-      {
-        title: "3D-printed tunable stiffness chain-mail fabric for adaptive support in movement rehabilitation",
-        topic: "Rehabilitation Biomechanics: Rehabilitation",
-        institution: "University of Exeter"
-      },
-      {
-        title: "Multi-scale modeling of tendon remodeling under cyclic loading in athletic populations",
-        topic: "Musculoskeletal Biomechanics: Soft Tissue Mechanics",
-        institution: "ETH Zürich"
-      },
-      {
-        title: "Wearable IMU-driven gait phenotyping for early detection of balance impairment",
-        topic: "Human Movement Science: Gait & Posture",
-        institution: "University of British Columbia"
-      },
-      {
-        title: "Microfluidic organ-on-chip platform to study endothelial mechanotransduction in pulsatile flow",
-        topic: "Cardiovascular Biomechanics: Hemodynamics",
-        institution: "Imperial College London"
-      },
-      {
-        title: "Data-efficient deep learning for ultrasound-based muscle architecture estimation in real time",
-        topic: "Computational Biomechanics: AI & Imaging",
-        institution: "National University of Singapore"
-      }
-    ];
 
-    // --- Utilities ---
-    const $ = (id) => document.getElementById(id);
 
-    const state = {
-      discoveredCount: 0,
-      lastIndex: -1,
-      shownOnce: false,
-      // If you want to prevent repeats until all are seen, flip this to true.
-      noRepeatUntilExhausted: false,
-      remainingPool: []
-    };
+// --- Utilities ---
+  const $ = (id) => document.getElementById(id);
 
-    // Fun prompt lines + encouragements
-    const prompts = [
-      "“Keep going—your next favorite idea might be one click away.”",
-      "“Biomechanics is full of surprises. Ready for the next one?”",
-      "“Curiosity looks good on you. Discover another breakthrough!”",
-      "“One click = one new research spark.”",
-      "“Plot twist: the next card could change your perspective.”"
-    ];
+  const state = {
+    discoveredCount: 0,
+    lastIndex: -1,
+    noRepeatUntilExhausted: false,
+    remainingPool: []
+  };
 
-    const encouragements = [
-      "Another breakthrough awaits!",
-      "Keep discovering amazing research!",
-      "One more click… just to see what’s next 👀",
-      "You’re on a roll—keep exploring!",
-      "New ideas incoming in 3… 2… 1…"
-    ];
+  const encouragements = [
+    "Another breakthrough awaits!",
+    "Keep discovering amazing research!",
+    "One more click… just to see what’s next 👀",
+    "You’re on a roll—keep exploring!",
+    "New ideas incoming in 3… 2… 1…"
+  ];
 
-    // Badge milestones (every 10 discoveries)
-    function getBadgeForMilestone(n){
-      const badges = {
-        10:  { title: "Curious Starter", emoji: "✨", body: "10 discoveries! Your curiosity is officially biomech-powered." },
-        20:  { title: "Momentum Builder", emoji: "⚡", body: "20 down—your discovery streak is gaining speed." },
-        30:  { title: "Insight Collector", emoji: "🧠", body: "30 breakthroughs! You’re collecting serious insight points." },
-        40:  { title: "Research Ranger", emoji: "🧭", body: "40 discovered—navigating WCB science like a pro." },
-        50:  { title: "Halfway Hero", emoji: "🏅", body: "50! Halfway through the breakthroughs. Keep going!" },
-        60:  { title: "Idea Explorer", emoji: "🚀", body: "60 discoveries! You’re launching into new research worlds." },
-        70:  { title: "Biomech Buff", emoji: "💪", body: "70! Your biomechanics knowledge aura is glowing." },
-        80:  { title: "Innovation Scout", emoji: "🔍", body: "80 discovered—spotting innovation like it’s your job." },
-        90:  { title: "Breakthrough Beacon", emoji: "🌟", body: "90! You’re basically a beacon for great research." },
-        100: { title: "Discovery Legend", emoji: "🏆", body: "100/100! You unlocked the full WCB Research Explorer." }
-      };
-      return badges[n] || null;
+  function clamp(num, min, max){ return Math.min(max, Math.max(min, num)); }
+
+  function setText(){
+    const total = discoveries.length;
+    $("counterText").innerHTML = `<strong>${state.discoveredCount}</strong> discovered`;
+    $("progressText").textContent = `You have discovered ${state.discoveredCount} of ${total} breakthroughs.`;
+    const pct = total > 0 ? (state.discoveredCount / total) * 100 : 0;
+    $("fill").style.width = `${clamp(pct, 0, 100)}%`;
+
+    $("encourage").textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+  }
+
+  function animateCard(){
+    const card = $("card");
+    card.classList.remove("anim");
+    void card.offsetWidth; // reflow
+    card.classList.add("anim");
+  }
+
+  function pickRandomIndexAvoidRepeat(){
+    const total = discoveries.length;
+    if (total === 0) return -1;
+    if (total === 1) return 0;
+
+    let idx = Math.floor(Math.random() * total);
+    if (idx === state.lastIndex) {
+      idx = (idx + 1 + Math.floor(Math.random() * (total - 1))) % total;
     }
+    return idx;
+  }
 
-    function clamp(num, min, max){ return Math.min(max, Math.max(min, num)); }
+  function showDiscovery(index){
+    if (index < 0) return;
+    const d = discoveries[index];
 
-    function setText(){
-      const total = discoveries.length; // will be 100 once you replace array
-      $("counterText").innerHTML = `<strong>${state.discoveredCount}</strong> discovered`;
-      $("progressText").textContent = `You have discovered ${state.discoveredCount} of ${total} breakthroughs.`;
-      const pct = total > 0 ? (state.discoveredCount / total) * 100 : 0;
-      $("fill").style.width = `${clamp(pct, 0, 100)}%`;
+    $("title").textContent = d.title;
+    $("topic").textContent = d.topic;
+    $("institution").textContent = d.institution;
 
-      // rotate playful prompt + footer encouragement
-      $("promptLine").textContent = prompts[Math.floor(Math.random() * prompts.length)];
-      $("encourage").textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
-    }
+    $("topicBadge").textContent = d.topic;
+    $("topicPill").textContent = `Topic: ${d.topic}`;
 
-    function animateCard(){
-      const card = $("card");
-      card.classList.remove("anim");
-      // trigger reflow
-      void card.offsetWidth;
-      card.classList.add("anim");
-    }
+    animateCard();
+    state.lastIndex = index;
+  }
 
-    function pickRandomIndexAvoidRepeat(){
-      const total = discoveries.length;
-      if (total === 0) return -1;
-      if (total === 1) return 0;
+  function discoverNext({surprise=false} = {}){
+    const total = discoveries.length;
+    if (total === 0) return;
 
-      let idx = Math.floor(Math.random() * total);
-      if (idx === state.lastIndex) {
-        idx = (idx + 1 + Math.floor(Math.random() * (total - 1))) % total;
-      }
-      return idx;
-    }
+    state.discoveredCount = clamp(state.discoveredCount + 1, 0, total);
 
-    function initPoolIfNeeded(){
-      if (!state.noRepeatUntilExhausted) return;
-      if (!state.remainingPool.length){
-        state.remainingPool = Array.from({length: discoveries.length}, (_, i) => i);
-        // shuffle
-        for (let i = state.remainingPool.length - 1; i > 0; i--){
-          const j = Math.floor(Math.random() * (i + 1));
-          [state.remainingPool[i], state.remainingPool[j]] = [state.remainingPool[j], state.remainingPool[i]];
-        }
-      }
-    }
+    const idx = pickRandomIndexAvoidRepeat();
+    showDiscovery(idx);
+    setText();
+  }
 
-    function pickFromPoolAvoidImmediateRepeat(){
-      initPoolIfNeeded();
-      if (!state.remainingPool.length) return pickRandomIndexAvoidRepeat();
+  function resetProgress(){
+    state.discoveredCount = 0;
+    state.lastIndex = -1;
+    $("badgeSlot").innerHTML = "";
+    setText();
+  }
 
-      // If the next in pool matches lastIndex, swap with a later one if possible
-      let idx = state.remainingPool[state.remainingPool.length - 1];
-      if (idx === state.lastIndex && state.remainingPool.length > 1){
-        const swapPos = Math.floor(Math.random() * (state.remainingPool.length - 1));
-        const tmp = state.remainingPool[swapPos];
-        state.remainingPool[swapPos] = idx;
-        state.remainingPool[state.remainingPool.length - 1] = tmp;
-        idx = state.remainingPool[state.remainingPool.length - 1];
-      }
-      state.remainingPool.pop();
-      return idx;
-    }
+  // --- Run after page loads ---
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("WCB Research Explorer loaded ✅", discoveries.length, "discoveries");
 
-    function showDiscovery(index){
-      if (index < 0) return;
-
-      const d = discoveries[index];
-      $("title").textContent = d.title;
-      $("topic").textContent = d.topic;
-      $("institution").textContent = d.institution;
-
-      $("topicBadge").textContent = d.topic;
-      $("topicPill").textContent = `Topic: ${d.topic}`;
-
-      animateCard();
-      state.lastIndex = index;
-    }
-
-    function maybeShowBadge(){
-      const badge = getBadgeForMilestone(state.discoveredCount);
-      if (!badge) return;
-
-      // side-panel badge line
-      const slot = $("badgeSlot");
-      slot.innerHTML = `
-        <div class="badge" aria-label="Badge unlocked">
-          <span class="medal" aria-hidden="true"></span>
-          <span>${badge.emoji} <strong>${badge.title}</strong> — unlocked at ${state.discoveredCount}</span>
-        </div>
-      `;
-
-      // toast
-      showToast(badge.emoji, badge.title, badge.body);
-    }
-
-    let toastTimer = null;
-    function showToast(emoji, title, body){
-      const toast = $("toast");
-      $("toastEmoji").textContent = emoji;
-      $("toastTitle").textContent = title;
-      $("toastBody").textContent = body;
-
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
-    }
-
-    function discoverNext({surprise=false} = {}){
-      const total = discoveries.length;
-      if (total === 0){
-        showToast("⚠️", "No data yet", "Add discoveries to the array to start exploring.");
-        return;
-      }
-
-      // Count only after the first “real” reveal
-      state.discoveredCount = clamp(state.discoveredCount + 1, 0, total);
-      state.shownOnce = true;
-
-      // pick index
-      let idx;
-      if (state.noRepeatUntilExhausted){
-        idx = pickFromPoolAvoidImmediateRepeat();
-      } else {
-        idx = pickRandomIndexAvoidRepeat();
-      }
-
-      // “Surprise Me” uses same mechanism; it just feels different via toast copy
-      if (surprise){
-        showToast("🎲", "Surprise topic!", "Jumping to something unexpected—enjoy the discovery.");
-      }
-
-      showDiscovery(idx);
-      setText();
-      maybeShowBadge();
-
-      // If they hit 100% and array is 100, celebrate
-      if (state.discoveredCount === total && total >= 10){
-        showToast("🏁", "Explorer complete!", "You’ve seen them all. Want another round? Hit Reset and go again.");
-      }
-    }
-
-    function resetProgress(){
-      state.discoveredCount = 0;
-      state.lastIndex = -1;
-      state.shownOnce = false;
-      state.remainingPool = [];
-      $("badgeSlot").innerHTML = "";
-      setText();
-      showToast("🔄", "Reset!", "Discovery count cleared. Another breakthrough awaits!");
-    }
-
-    // Wire up UI
     $("discoverBtn").addEventListener("click", () => discoverNext({surprise:false}));
     $("surpriseBtn").addEventListener("click", () => discoverNext({surprise:true}));
     $("resetBtn").addEventListener("click", resetProgress);
 
-    // Initialize
     setText();
-
-    // Optional: start with an initial card (uncomment to auto-reveal on load)
+    // Optional: reveal one immediately
     // discoverNext();
-// Wire up UI
-  document.addEventListener("DOMContentLoaded", function () {
-
-  document.getElementById("discoverBtn").addEventListener("click", () => discoverNext({surprise:false}));
-  document.getElementById("surpriseBtn").addEventListener("click", () => discoverNext({surprise:true}));
-  document.getElementById("resetBtn").addEventListener("click", resetProgress);
-
-  setText();
-
-});
-  </script>
+  });
+</script>
 </body>
 </html>
+
 
