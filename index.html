@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WCB Research Explorer — World Congress on Biomechanics 2026</title>
+  <meta name="description" content="Discover WCB 2026 research breakthroughs in a fun, gamified way. Explore titles, topics, and institutions—one discovery at a time." />
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0f2a3a;
+      --card:#0f172aee;
+      --text:#eaf0ff;
+      --muted:#b9c4e0;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --ring: rgba(125,211,252,.35);
+
+      --a1:#7c3aed; /* purple */
+      --a2:#22c55e; /* green  */
+      --a3:#38bdf8; /* sky    */
+      --a4:#fb7185; /* rose   */
+
+      --btn:#111a35;
+      --btn2:#0c132b;
+      --stroke: rgba(255,255,255,.10);
+
+      --radius: 18px;
+      --radius2: 22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(900px 500px at 80% 15%, rgba(124,58,237,.20), transparent 65%),
+        radial-gradient(900px 650px at 50% 90%, rgba(34,197,94,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .shell{
+      width:min(980px, 100%);
+      display:grid;
+      gap:18px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      padding:10px 6px;
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      min-width: 260px;
+    }
+
+    .logo{
+      width:44px;height:44px;
+      border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(56,189,248,.9), transparent 55%),
+        radial-gradient(circle at 70% 30%, rgba(124,58,237,.9), transparent 55%),
+        radial-gradient(circle at 50% 75%, rgba(34,197,94,.9), transparent 58%),
+        rgba(255,255,255,.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(20px, 2.5vw, 28px);
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .subtitle{
+      margin-top:4px;
+      color:var(--muted);
+      font-size: 13.5px;
+    }
+
+    .meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .pill{
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--text);
+      font-size: 13px;
+      box-shadow: 0 12px 36px rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      display:flex;
+      gap:8px;
+      align-items:center;
+      max-width: 100%;
+    }
+    .pill strong{font-weight:700}
+    .pill .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: linear-gradient(135deg, var(--a3), var(--a1));
+      box-shadow: 0 0 0 4px rgba(56,189,248,.15);
+      flex:0 0 auto;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    @media (max-width: 860px){
+      .grid{grid-template-columns: 1fr}
+      .meta{justify-content:flex-start}
+      header{flex-direction:column; align-items:stretch}
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      backdrop-filter: blur(14px);
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 260px at 18% 8%, rgba(56,189,248,.24), transparent 60%),
+                  radial-gradient(520px 240px at 82% 15%, rgba(124,58,237,.22), transparent 60%),
+                  radial-gradient(520px 280px at 48% 92%, rgba(34,197,94,.18), transparent 60%);
+      pointer-events:none;
+      filter: blur(0px);
+      opacity:.9;
+    }
+    .card > *{position:relative}
+
+    .card-body{
+      padding:22px 22px 18px;
+    }
+
+    .kicker{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+
+    .topic-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      color: var(--text);
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .spark{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(135deg, var(--a4), var(--a3));
+      box-shadow: 0 0 0 4px rgba(251,113,133,.16);
+    }
+
+    .title{
+      font-size: clamp(20px, 2.2vw, 30px);
+      line-height:1.2;
+      margin: 8px 0 14px;
+      letter-spacing:-.02em;
+    }
+
+    .lines{
+      display:grid;
+      gap:10px;
+      margin: 0 0 10px;
+    }
+    .line{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .line .label{
+      width:92px;
+      color: var(--muted);
+      font-size: 12.5px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+    .line .value{
+      font-size: 14px;
+      line-height:1.35;
+      color: var(--text);
+    }
+
+    .footer{
+      padding:14px 22px;
+      border-top: 1px solid rgba(255,255,255,.09);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .cta-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:18px 22px 22px;
+    }
+
+    button{
+      border:0;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+      color: var(--text);
+      outline:none;
+    }
+    button:focus-visible{
+      box-shadow: 0 0 0 6px var(--ring), 0 16px 40px rgba(0,0,0,.30);
+    }
+    button:active{transform: translateY(1px) scale(.99)}
+
+    .btn-primary{
+      flex: 1 1 260px;
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(124,58,237,.95));
+      box-shadow: 0 16px 40px rgba(0,0,0,.25);
+    }
+    .btn-primary:hover{box-shadow: 0 18px 48px rgba(0,0,0,.30)}
+
+    .btn-secondary{
+      flex: 0 1 190px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .btn-secondary:hover{background: rgba(255,255,255,.10)}
+
+    .btn-ghost{
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+    .btn-ghost:hover{background: rgba(255,255,255,.06); color: var(--text)}
+    .btn-ghost:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
+    .side{
+      display:grid;
+      gap:18px;
+    }
+
+    .panel{
+      padding:18px;
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 18px 60px rgba(0,0,0,.25);
+      backdrop-filter: blur(12px);
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size: 15px;
+      letter-spacing:-.01em;
+    }
+    .panel p{
+      margin:0;
+      color: var(--muted);
+      line-height:1.5;
+      font-size: 13.5px;
+    }
+
+    .progress{
+      display:grid;
+      gap:12px;
+    }
+    .bar{
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(56,189,248,.95), rgba(124,58,237,.95));
+      transition: width .35s ease;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 12px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .badge .medal{
+      width:18px;height:18px;border-radius:6px;
+      background: linear-gradient(135deg, rgba(251,113,133,.95), rgba(56,189,248,.95));
+      box-shadow: 0 0 0 5px rgba(251,113,133,.12);
+    }
+
+    /* Card animation: soft “flip in” */
+    .anim{
+      animation: reveal .42s ease both;
+      transform-origin: 50% 60%;
+    }
+    @keyframes reveal{
+      0%{opacity:0; transform: translateY(10px) rotateX(8deg) scale(.992)}
+      100%{opacity:1; transform: translateY(0) rotateX(0) scale(1)}
+    }
+
+    /* Floating toast */
+    .toast{
+      position: fixed;
+      inset: auto 18px 18px auto;
+      max-width: min(420px, calc(100vw - 36px));
+      background: rgba(15,23,42,.92);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      border-radius: 18px;
+      padding: 14px 14px;
+      display:none;
+      gap:10px;
+      align-items:flex-start;
+      backdrop-filter: blur(14px);
+    }
+    .toast.show{display:flex; animation: toastIn .35s ease both}
+    @keyframes toastIn{
+      0%{opacity:0; transform: translateY(8px) scale(.98)}
+      100%{opacity:1; transform: translateY(0) scale(1)}
+    }
+    .toast .emoji{
+      width:34px;height:34px;border-radius:14px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      flex: 0 0 auto;
+      font-size: 18px;
+    }
+    .toast .t-title{
+      font-weight: 900;
+      margin: 0 0 2px;
+      font-size: 13.5px;
+    }
+    .toast .t-body{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.35;
+    }
+
+    .tiny{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    a{color:inherit}
+  </style>
+</head>
+
+<body>
+  <main class="shell" aria-label="WCB Research Explorer">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>WCB Research Explorer</h1>
+          <div class="subtitle">World Congress on Biomechanics 2026 • A playful research discovery game</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="pill" title="Your exploration progress">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="counterText"><strong>0</strong> discovered</span>
+        </div>
+        <div class="pill" title="Current discovery topic">
+          <span class="dot" aria-hidden="true" style="background: linear-gradient(135deg, var(--a2), var(--a3)); box-shadow:0 0 0 4px rgba(34,197,94,.14)"></span>
+          <span id="topicPill">Topic: —</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid">
+      <!-- Main discovery card -->
+      <article class="card" aria-live="polite">
+        <div class="card-body" id="card">
+          <div class="kicker">
+            <span class="topic-badge">
+              <span class="spark" aria-hidden="true"></span>
+              <span id="topicBadge">Choose “Discover” to begin</span>
+            </span>
+            <button class="btn-ghost" id="resetBtn" type="button" title="Reset your discovered count">
+              Reset
+            </button>
+          </div>
+
+          <h2 class="title" id="title">Ready to discover biomechanics breakthroughs?</h2>
+
+          <div class="lines" role="group" aria-label="Discovery details">
+            <div class="line">
+              <div class="label">Topic</div>
+              <div class="value" id="topic">Click the button to reveal your first breakthrough.</div>
+            </div>
+            <div class="line">
+              <div class="label">Institution</div>
+              <div class="value" id="institution">You’ll see just the essentials — no full abstract text.</div>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <button class="btn-primary" id="discoverBtn" type="button">
+              Discover Another Breakthrough
+            </button>
+            <button class="btn-secondary" id="surpriseBtn" type="button" title="Random topic jump!">
+              Surprise Me
+            </button>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>Presented at <strong>WCB 2026</strong></span>
+          <span class="tiny" id="encourage">Another breakthrough awaits!</span>
+        </div>
+      </article>
+
+      <!-- Side panels -->
+      <aside class="side" aria-label="Explorer side panel">
+        <div class="panel">
+          <h2>Your discovery journey</h2>
+          <div class="progress" style="margin-top:10px;">
+            <div class="tiny" id="progressText">You have discovered 0 of 100 breakthroughs.</div>
+            <div class="bar" aria-hidden="true"><div class="fill" id="fill"></div></div>
+            <div id="badgeSlot"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>How it works</h2>
+          <p>
+            Each click reveals a new research “discovery card” (Title, Topic, Institution).
+            Keep clicking to explore more—hit milestones to unlock mini celebrations.
+          </p>
+          <p style="margin-top:10px;">
+            Tip: Replace the placeholder <code>discoveries</code> array with your full 100 abstracts whenever ready.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h2>Playful prompts</h2>
+          <p id="promptLine">“Keep going—your next favorite idea might be one click away.”</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Toast for badge unlocks -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="emoji" id="toastEmoji" aria-hidden="true">🎉</div>
+    <div>
+      <p class="t-title" id="toastTitle">Badge unlocked!</p>
+      <p class="t-body" id="toastBody">You’ve hit a milestone. Keep discovering amazing research!</p>
+    </div>
+  </div>
+
+  <script>
+
+
+const discoveries = [
+{title: "3D-printed tunable stiffness chain-mail fabric with a data-driven model enabling inverse design for rehabilitation and assistive devices", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "University of exeter"},
+{title: "4D Reconstruction of Fetal Left Ventricles from Echocardiography via Geometric-Aware Radial Segmentation and Graph-Fourier Reconstruction", topic: "Emerging Areas: N/A", institution: "Imperial College London"},
+{title: "A 3D Goal Equivalent Manifold Approach to Detecting Season-Long Post-Concussion Motor Deficits in Female Soccer Players", topic: "Clinical Biomechanics: N/A", institution: "University of Ottawa"},
+{title: "A Biomechanical–Mathematical Model Linking Brain Impact Biomechanics to Tau Protein Accumulation in Chronic Traumatic Encephalopathy", topic: "Injury Biomechanics: N/A", institution: "University of Aveiro"},
+{title: "A Computational Fluid Dynamics Study of Human and Porcine Hearts: Implications for Cardiac Xenotransplantation", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "School of Mechanical and Materials Engineering, University College Dublin"},
+{title: "A High-Fidelity Finite Element Model of the Lumbar Spine to Quantify Load Sharing Across Functional Tasks", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "LaBS, Dept. of Chemistry, Materials and Chemical Engineering, Politecnico di Milano"},
+{title: "A Machine Learning Approach for Predicting the Grade of Execution of Triple Axel Jumps in Male Figure Skaters Using Real-World Kinematic Data from the World Championships", topic: "Human Motion and Performance: Sports", institution: "Toin University of Yokohama"},
+{title: "A Mechano-Osmotic Coupling Drives Stress-Dependent Growth in Breast Cancer Spheroids Revealed Through AI-Accelerated Discrete Cell Modelling", topic: "Cell Biomechanics: Methods and Models", institution: "University of Galway"},
+{title: "A New Perspective on Cartilage Biology: 3D Characterisation of Chondrocyte Morphology and Organisation Across Postnatal Development.", topic: "Musculoskeletal Biomechanics: Tissues", institution: "University College Dublin"},
+{title: "A Novel Computational Pipeline to Predict Hypoattenuating Leaflet Thickening Following Transcatheter Aortic Valve Replacement Using Pre-Procedural Computed Tomography Scans", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "Georgia Institute of Technology"},
+{title: "A Personalised Intervention Integrating Pressure-Optimized Footwear, Self-Management and Education Reduces the Incidence of Foot Ulcer Recurrence in Diabetes: The DIASSIST Multicenter Randomised Controlled Trial", topic: "Clinical Biomechanics: N/A", institution: "Amsterdam UMC, University of Amsterdam"},
+{title: "A Physics-Informed Computational Model Based on Diffusion MRI for Predicting Ischaemic Stroke Evolution", topic: "Micro/Biofluidics: In Silico Models and Simulation", institution: "Institute of Applied Mechanics, National Taiwan University"},
+{title: "A Single Thigh-worn Accelerometer and Context-Specific Features to Predict Fall Risk in Persons with Multiple Sclerosis", topic: "Clinical Biomechanics: N/A", institution: "Center for Remote Health Monitoring, Wake Forest School of Medicine"},
+{title: "A Variability-Embedded Music System (VEMS) Modulates Gait Variability as Effectively as Auditory or Visual Cueing", topic: "Human Motion and Performance: Locomotion/Gait", institution: "Department of Biomechanics and Center for Research in Human Movement Variability, University of Nebraska at Omaha"},
+{title: "Abluminal Watertight Lining in Porcine Carotid Arteries: Biomechanical Role and Impact on Decellularization Efficiency", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Materials and Devices", institution: "Department of Mechanical Engineering, National Yang Ming Chiao Tung University"},
+{title: "ACL Injury Resilience Score Distinguishes Risky and Protective Biomechanics with In-Lab and Out-of-Lab Measurement Tools", topic: "Human Motion and Performance: Sports", institution: "Stanford University"},
+{title: "ACL Reconstruction is Associated with Significant Differences in Contralateral Tibial Morphology Compared to Controls", topic: "Orthopaedic Biomechanics: Sports Medicine", institution: "University of Nebraska Medical Center"},
+{title: "Acute Effect of Incremental Exhaustive Treadmill Running on Running Biomechanics in Well-Trained Runners", topic: "Human Motion and Performance: Sports", institution: "Trier University of Applied Sciences; Department of Computer Science – Therapeutic Sciences"},
+{title: "Advancing Biofidelity: Subject-Specific Validation of Whole-Body Human Models for Frontal Impacts", topic: "Injury Biomechanics: N/A", institution: "University of Michigan Transportation Research Institute"},
+{title: "Age-Dependent Intracranial Volume Redistribution and Its Biomechanical Implications for Traumatic Brain Injury: A Multi-Scale Analysis", topic: "Injury Biomechanics: N/A", institution: "Wrocław University of Science and Technology"},
+{title: "Age-related Differences in Locomotor Response to Fall-Related Anxiety in Virtual Reality Settings Across Time", topic: "Clinical Biomechanics: N/A", institution: "George Mason University"},
+{title: "AI-Based Ensemble Approaches to Anticipate Symptom Progression in Patients with an Abdominal Aortic Aneurysm", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "The University of Texas at San Antonio"},
+{title: "An “Uplifting” Exploration: What Global or Local Anthropometry Best Predicts Pelvic Floor Muscle Volume?", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "University of Virginia"},
+{title: "An Automated Pipeline for Paediatric Musculoskeletal Model Development Utilising Articulated Statistical Shape Modelling and OpenSim", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "Auckland Bioengineering Institute"},
+{title: "Analysis of Muscle Synergy Strategies During High-Risk Tasks in Patients Following ACL Reconstruction", topic: "Orthopaedic Biomechanics: Sports Medicine", institution: "The Hong Kong Polytechnic University"},
+{title: "Anterior Trunk Leaning Does Not Alter Recovery Time and Sagittal Whole-Body Angular Momentum After Perturbations in Human Running", topic: "Human Motion and Performance: Locomotion/Gait", institution: "Institute for Advanced Biomechanics and Motion Studies, Offenburg University of Applied Sciences"},
+{title: "Aortic Microstructure and Suture Pullout Variability", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "Drexel University"},
+{title: "Arm Swing As A Mediator Of Age-related Slip-Fall Risk", topic: "Clinical Biomechanics: N/A", institution: "Department of Kinesiology and Health, Georgia State University"},
+{title: "Assessing the Effect of Inter-Athlete Spatiotemporal Coordination on Pairs Rowing Performance Times", topic: "Human Motion and Performance: Sports", institution: "Brock University"},
+{title: "Assessing the Posteriorly Directed Forces Applied to Pediatric Knees by ACL Orthoses", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "Akron Children's Hospital"},
+{title: "Assessment of Achilles tendon loading during outdoor running using a novel wearable system", topic: "Human Motion and Performance: Sports", institution: "Saint Louis University"},
+{title: "Asymmetrical Step Initiation Strategies and Fall Risk in Individuals with Unilateral Lower Limb Amputation: Insights from the Choice Stepping Reaction Time Test", topic: "Human Motion and Performance: Balance, Posture and Control", institution: "PROTEOR, 6 rue de la Redoute, CS 37833, CEDEX"},
+{title: "Athletes With ACL Reconstruction Demonstrate Altered Movement Variability When Preparing to Respond to Perturbations: A Preliminary Analysis", topic: "Clinical Biomechanics: N/A", institution: "High Point University"},
+{title: "Automated Subject-Specific Modeling of 6 DoF Glenohumeral Kinematics", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "ETH Zurich"},
+{title: "Automated Workflow of Vertebral Finite Element Models: Impact of Coordinate Systems and Boundary Conditions on Fracture Load", topic: "Orthopaedic Biomechanics: Spine", institution: "Aarhus University"},
+{title: "Beta- and Gamma-Band Cortical Connectivity During Destabilizing Pivoting Stepping Movement on a Robotic Elliptical Trainer", topic: "Clinical Biomechanics: N/A", institution: "University of Maryland Baltimore"},
+{title: "Beta-Amyloid42 Oligomers Soften Neuronal Cells by Reorganization of Cytoskeleton", topic: "Cell Biomechanics: Mechanobiology", institution: "Shanghai Jiao Tong University"},
+{title: "Biomechanical Evaluation of Self-Expandable Metallic Stent Migration After Hepaticogastrostomy Using a Porcine Pullout Test Across the Liver Parenchyma and Gastric Wall", topic: "Organ and Tissue Biomechanics: N/A", institution: "Kyushu Institute of Technology"},
+{title: "Biomechanical Predictors of Self-Contamination During Medical Gown Doffing: A Motion-Capture Analysis of Hand–Gown Interaction", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "Iowa State University"},
+{title: "Biomechanically Optimized Peripheral Artery Stent Remonstrates Reduced Intimal Hyperplasia and Stenosis In a Swine Model", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Materials and Devices", institution: "University of Nebraska Omaha"},
+{title: "Biophysical Modeling of Human Colonic Motor Patterns in Health and Disease", topic: "Organ and Tissue Biomechanics: N/A", institution: "University of Notre Dame"},
+{title: "Capturing Individual Recovery Trajectories After ACL Injury Using Principal Component-Derived Countermovement Jump Data.", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "McMaster University"},
+{title: "Cartilage Volume and Composition in Masters Runners With and Without Knee Osteoarthritis: Changes Immediately Following a Run and After a 12-Week Progressive Distance Running Program", topic: "Clinical Biomechanics: N/A", institution: "University of British Columbia"},
+{title: "Cell Dynamics Driven by Substrate Elasticity-Topography Interplay for Microfluidic Applications", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Materials and Devices", institution: "Tokyo Metropolitan University"},
+{title: "Co-Contraction Patterns of Forearm Muscles During Cylindrical Grasp Differ Between People With Hand Osteoarthritis and Healthy Individuals", topic: "Orthopaedic Biomechanics: Upper Extremities", institution: "Department of Bioengineering, Imperial College London"},
+{title: "Comparing EMG-Constrained and Unconstrained Optimization for Muscle Moment Loops During Mediolateral Instability", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "University of Calgary"},
+{title: "Comparing Split Belt Treadmill Adaptation Rates Between Children with Cerebral palsy and Typically Developing Peers Using Bayesian Models", topic: "Clinical Biomechanics: N/A", institution: "University of Washington"},
+{title: "Computational Analysis of Posture-Dependent Cerebrovascular Hemodynamics Using a Multiscale Model with Vascular Autoregulation", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "Korea Advanced Institute of Science and Technology"},
+{title: "Designing Biomimetic Scaffolds for Bone Tissue Engineering through Machine Learning and Computational Simulation", topic: "Emerging Areas: N/A", institution: "The University of Hong Kong"},
+{title: "Detecting Slips on Ice Using Wearable Inertial sensors: Identifying Kinematic Features for Classifying Slip Events", topic: "Human Motion and Performance: Locomotion/Gait", institution: "University of Toronto"},
+{title: "Development and Validation of Physics-Informed Neural Networks for Rapid Prediction of Brain Strain in Traumatic Brain Injury Modeling", topic: "Injury Biomechanics: N/A", institution: "Division of Neurosurgery, McMaster University"},
+{title: "Development of a Wearable Feedback System for Wheelchair Racing Athletes: A Participatory Design Approach", topic: "Human Motion and Performance: Sports", institution: "Université Laval"},
+{title: "Development of an In Vitro Knee Model for Dynamic Biomechanical Evaluation of Meniscus Allograft Positioning", topic: "Orthopaedic Biomechanics: Trauma and Repair", institution: "School of Biomedical Sciences, University of Leeds"},
+{title: "Do Shoulder and Elbow Kinetics and Pitching Kinematics Differ Between Pitching On Dirt Surface and Turf Surface Pitching Mounds?", topic: "Human Motion and Performance: Sports", institution: "California State University, Sacramento"},
+{title: "Effects of Agonist-Antagonist Myoneural Interface on Whole-Body Angular Momentum During Perturbed Walking Among Individuals With Transtibial Limb Loss", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "Henry M. Jackson Foundation"},
+{title: "Effects of Brain Tissue Preparation on Regional Biomechanics in Tauopathy Mouse Model", topic: "Organ and Tissue Biomechanics: N/A", institution: "University of Florida"},
+{title: "Effects of Hand Dominance, Sex, and Fatigue on Shoulder Muscle Synergies During a Repetitive Overhead Task: A Preliminary Study", topic: "Rehabilitation Biomechanics and Human Factors: Occupational Biomechanics", institution: "McGill University"},
+{title: "Effects of Pool Depth on Swimming Performance: Application to the 200-m Freestyle", topic: "Human Motion and Performance: Sports", institution: "Seoul National University"},
+{title: "Frequency and Coherence Analysis of IMU-Derived Breast Motion Across Increasing Running Speeds", topic: "Human Motion and Performance: Sports", institution: "Simon Fraser University"},
+{title: "Full-Body Gait Reconstruction from Arbitrarily Sparse Wearable Sensors via Diffusion Models with Transfer from Healthy to Pathological Populations", topic: "Human Motion and Performance: Locomotion/Gait", institution: "Department of Engineering, Faculty of Environment, Science and Economy, University of Exeter"},
+{title: "Full-Field Elastography of the Cell Nucleus Reveals Peripheral Stiffening in Response to Strain", topic: "Cell Biomechanics: Methods and Models", institution: "University of Colorado Boulder"},
+{title: "Gait Dynamics in Space and Time Reveal Distinct Impacts of Aging Across the Lifespan", topic: "Human Motion and Performance: Locomotion/Gait", institution: "University of Nebraska at Omaha"},
+{title: "Gait Variability and Velocity Improve With Partnered Dance Intervention Among Individuals With Breast Cancer and Chemotherapy-Induced Neuropathy: A Pilot Study", topic: "Clinical Biomechanics: N/A", institution: "The Ohio State University College of Medicine"},
+{title: "Generating Physically Realistic Footwear Contact Pressure Distributions with Diffusion Models", topic: "Emerging Areas: N/A", institution: "University of Pittsburgh"},
+{title: "Generating Standing Posture Finite Element Models of the Spine Based on Radiation-Free Imaging", topic: "Orthopaedic Biomechanics: Spine", institution: "Eindhoven University of Technology"},
+{title: "Geometry-Aware Abdominal Aortic Aneurysm Digital Twins for Patient-Specific Wall Stress Mapping", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Methods, Models and Applications", institution: "Department of Mechanical, Aerosp., and Ind. Engineering, UT San Antonio"},
+{title: "Ground Reaction Force Characteristics During Salcow and Loop Jumps in a Novice and a Junior Figure Skater: A Case Study", topic: "Human Motion and Performance: Sports", institution: "Tsinghua University"},
+{title: "Hamstring Muscle Strain During Accelerated Sprints Following Repeated Sprints", topic: "Musculoskeletal Biomechanics: Joints and Motion", institution: "Centre for Sport Science and University Sports, University of Vienna"},
+{title: "Height or Hops: Why Do Female Hoopsters Rarely Dunk?", topic: "Human Motion and Performance: Sports", institution: "Texas Christian University"},
+{title: "Hierarchical Deep Reinforcement Learning Coordinates In Silico Agent-Based Cellular Functions of Bone Remodeling from Time-Lapsed In Vivo Imaging", topic: "Imaging and Biomedical Devices: Imaging Fundamentals and Applied Research", institution: "Institute for Biomechanics, ETH Zurich"},
+{title: "Impact of Neurocognitive Reaction Time on the Performance of an Unanticipated Sidestep Cut", topic: "Musculoskeletal Biomechanics: Joints and Motion", institution: "University of Michigan"},
+{title: "Implant Design Affects Knee Kinematics During Chair Rise After Total Knee Arthroplasty", topic: "Orthopaedic Biomechanics: Lower Extremities", institution: "University of Pittsbugh"},
+{title: "Mechanobiological Regulation of Transport and Shear in Hierarchical Bio-Inspired Scaffolds for Bone Repair", topic: "Tissue Engineering: Mechanobiology", institution: "Politecnico di Milano"},
+{title: "Muscle-Tendon Recovery Trajectories Relate to Shoulder Disability in Rotator Cuff Tendinopathy", topic: "Clinical Biomechanics: N/A", institution: "University of Southern California"},
+{title: "Neuromuscular Fatigue-Integrated Balance Training Does Not Improve Fatigue Resilience of Dynamic Postural Control in Individuals With Chronic Ankle Instability: Double-Blinded Randomized Controlled Trials", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "Department of Physical Education, Yonsei University"},
+{title: "Neuromuscular Modeling of the Human Eyelid", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "University of California, Los Angeles"},
+{title: "No Relation Between Maximum Hip Abductor Strength and Fatigue-Induced Changes in Hip Adduction Angles During a Near-Maximum 10 Km Run", topic: "Human Motion and Performance: Locomotion/Gait", institution: "Institute for Advanced Biomechanics and Motion Studies"},
+{title: "Novel 3-D Characterization of in Vivo muscle Properties Illustrates Directional Dependence in Resistance to Stress", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "Northwestern University"},
+{title: "Numerical Analysis of Knee Bending Effects on Blood Flow in a Femoral Arterial Stent Using a Centerline-Based Deformable Model", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Materials and Devices", institution: "The University of TOkyo"},
+{title: "Predictive Neuromuscular Simulations Indicate That Spinal Control Does Not Solely Explain Steady-State Human Walking", topic: "Human Motion and Performance: Balance, Posture and Control", institution: "Massachusetts Institute of Technology"},
+{title: "Quantifying Contributions From Individual Wrist Muscles to Hand Tremor in Persons With Essential Tremor", topic: "Clinical Biomechanics: N/A", institution: "Brigham Young University"},
+{title: "Quantifying the Temporal Delay between Breast and Torso Acceleration Data Obtained From Inertial Measurement Units", topic: "Human Motion and Performance: Sports", institution: "SFU Run Lab, Department of Biomedical Physiology and Kinesiology, Simon Fraser University"},
+{title: "Quantitative Magnetic Resonance Imaging of Age-Related Adaptations to Glenoid Labrum Health", topic: "Musculoskeletal Biomechanics: Tissues", institution: "University of Illinois at Urbana-Champaign"},
+{title: "Real-Time Amplitude-Based Haptic Feedback Enhances Arm Swing and Spatiotemporal Gait Parameters in Older Adults", topic: "Human Motion and Performance: Locomotion/Gait", institution: "University of Maine"},
+{title: "Sensitivity of Knee Contact Mechanics to Statistical Cartilage Thickness Models Derived From a Single and Multiple Imaging Modalities", topic: "Musculoskeletal Biomechanics: Methods, Models and Applications", institution: "University of Leeds"},
+{title: "Sex-differences in Preparatory Step Biomechanics During a 90° Cutting Task", topic: "Human Motion and Performance: Sports", institution: "The University of Calgary"},
+{title: "Shoe Fit and Downhill Cycling Performance", topic: "Human Motion and Performance: Sports", institution: "BOA Technology"},
+{title: "Sonified-Biofeedback Training to Improve Postural Control in Older Adults", topic: "Rehabilitation Biomechanics and Human Factors: Rehabilitation", institution: "Stevens Institute of Technology"},
+{title: "Subject-Specific In Silico Modeling of Brain Interstitial Fluid Transport Under Traumatic Loading", topic: "Injury Biomechanics: N/A", institution: "Lawrence Technological University"},
+{title: "Sweep-Frequency Impedance (SFI) for Middle-Ear Pathology Classification With Machine Learning", topic: "Clinical Biomechanics: N/A", institution: "Kanazawa University"},
+{title: "Temporal Differential Growth Drives Sequential Midgut Protrusion, Rotation, and Retraction: A Computational Simulation Study.", topic: "Organ and Tissue Biomechanics: N/A", institution: "Kobe University"},
+{title: "Understanding How People Prioritize Movement Goals During Overground Walking", topic: "Human Motion and Performance: Locomotion/Gait", institution: "Harvard University"},
+{title: "Upward Movement Velocity and Acceleration Strategies That Enable the Minimum-Velocity Advantage in Basketball Free Throws", topic: "Human Motion and Performance: Sports", institution: "University of Texas"},
+{title: "UVB-Induced Actin Disassembly Promotes Biomechanical Malignancy in Melanocyte", topic: "Cell Biomechanics: Mechanobiology", institution: "The Hong Kong University of Science and Technology"},
+{title: "VALIDATION AND VERIFICATION OF PATIENT-SPECIFIC TAVI SIMULATIONS FOR PARAVALVULAR LEAKAGE PREDICTION", topic: "Cardiovascular/Cardiorespiratory Biomechanics: Materials and Devices", institution: "IRCCS Humanitas Research Hospital"},
+{title: "Velocity-Based Strength Training:  The Predictive Use of Mean Concentric Velocity Data", topic: "Human Motion and Performance: Sports", institution: "ZHAW"},
+{title: "Visuospatial Attention and Trip Avoidance Throughout Pregnancy", topic: "Human Motion and Performance: Balance, Posture and Control", institution: "Washington State University"},
+{title: "Why Do Astronauts Bounce on the Moon? Mechanical Work of Walking, Running, and Skipping in Simulated Low gravity.", topic: "Human Motion and Performance: Locomotion/Gait", institution: "University of Milan"},
+{title: "Why Foot Model Choice Matters: Rethinking Ankle Kinematics in Running Shoe Research", topic: "Human Motion and Performance: Sports", institution: "New Balance"},
+{title: "Working Harder to Walk Slower: Treadmill-Based Gait Assessment Systematically Underestimates Overground Performance in Older Adults", topic: "Clinical Biomechanics: N/A", institution: "Auburn University"}
+];
+
+const discoveries = [
+      {
+        title: "3D-printed tunable stiffness chain-mail fabric for adaptive support in movement rehabilitation",
+        topic: "Rehabilitation Biomechanics: Rehabilitation",
+        institution: "University of Exeter"
+      },
+      {
+        title: "Multi-scale modeling of tendon remodeling under cyclic loading in athletic populations",
+        topic: "Musculoskeletal Biomechanics: Soft Tissue Mechanics",
+        institution: "ETH Zürich"
+      },
+      {
+        title: "Wearable IMU-driven gait phenotyping for early detection of balance impairment",
+        topic: "Human Movement Science: Gait & Posture",
+        institution: "University of British Columbia"
+      },
+      {
+        title: "Microfluidic organ-on-chip platform to study endothelial mechanotransduction in pulsatile flow",
+        topic: "Cardiovascular Biomechanics: Hemodynamics",
+        institution: "Imperial College London"
+      },
+      {
+        title: "Data-efficient deep learning for ultrasound-based muscle architecture estimation in real time",
+        topic: "Computational Biomechanics: AI & Imaging",
+        institution: "National University of Singapore"
+      }
+    ];
+
+    // --- Utilities ---
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      discoveredCount: 0,
+      lastIndex: -1,
+      shownOnce: false,
+      // If you want to prevent repeats until all are seen, flip this to true.
+      noRepeatUntilExhausted: false,
+      remainingPool: []
+    };
+
+    // Fun prompt lines + encouragements
+    const prompts = [
+      "“Keep going—your next favorite idea might be one click away.”",
+      "“Biomechanics is full of surprises. Ready for the next one?”",
+      "“Curiosity looks good on you. Discover another breakthrough!”",
+      "“One click = one new research spark.”",
+      "“Plot twist: the next card could change your perspective.”"
+    ];
+
+    const encouragements = [
+      "Another breakthrough awaits!",
+      "Keep discovering amazing research!",
+      "One more click… just to see what’s next 👀",
+      "You’re on a roll—keep exploring!",
+      "New ideas incoming in 3… 2… 1…"
+    ];
+
+    // Badge milestones (every 10 discoveries)
+    function getBadgeForMilestone(n){
+      const badges = {
+        10:  { title: "Curious Starter", emoji: "✨", body: "10 discoveries! Your curiosity is officially biomech-powered." },
+        20:  { title: "Momentum Builder", emoji: "⚡", body: "20 down—your discovery streak is gaining speed." },
+        30:  { title: "Insight Collector", emoji: "🧠", body: "30 breakthroughs! You’re collecting serious insight points." },
+        40:  { title: "Research Ranger", emoji: "🧭", body: "40 discovered—navigating WCB science like a pro." },
+        50:  { title: "Halfway Hero", emoji: "🏅", body: "50! Halfway through the breakthroughs. Keep going!" },
+        60:  { title: "Idea Explorer", emoji: "🚀", body: "60 discoveries! You’re launching into new research worlds." },
+        70:  { title: "Biomech Buff", emoji: "💪", body: "70! Your biomechanics knowledge aura is glowing." },
+        80:  { title: "Innovation Scout", emoji: "🔍", body: "80 discovered—spotting innovation like it’s your job." },
+        90:  { title: "Breakthrough Beacon", emoji: "🌟", body: "90! You’re basically a beacon for great research." },
+        100: { title: "Discovery Legend", emoji: "🏆", body: "100/100! You unlocked the full WCB Research Explorer." }
+      };
+      return badges[n] || null;
+    }
+
+    function clamp(num, min, max){ return Math.min(max, Math.max(min, num)); }
+
+    function setText(){
+      const total = discoveries.length; // will be 100 once you replace array
+      $("counterText").innerHTML = `<strong>${state.discoveredCount}</strong> discovered`;
+      $("progressText").textContent = `You have discovered ${state.discoveredCount} of ${total} breakthroughs.`;
+      const pct = total > 0 ? (state.discoveredCount / total) * 100 : 0;
+      $("fill").style.width = `${clamp(pct, 0, 100)}%`;
+
+      // rotate playful prompt + footer encouragement
+      $("promptLine").textContent = prompts[Math.floor(Math.random() * prompts.length)];
+      $("encourage").textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+    }
+
+    function animateCard(){
+      const card = $("card");
+      card.classList.remove("anim");
+      // trigger reflow
+      void card.offsetWidth;
+      card.classList.add("anim");
+    }
+
+    function pickRandomIndexAvoidRepeat(){
+      const total = discoveries.length;
+      if (total === 0) return -1;
+      if (total === 1) return 0;
+
+      let idx = Math.floor(Math.random() * total);
+      if (idx === state.lastIndex) {
+        idx = (idx + 1 + Math.floor(Math.random() * (total - 1))) % total;
+      }
+      return idx;
+    }
+
+    function initPoolIfNeeded(){
+      if (!state.noRepeatUntilExhausted) return;
+      if (!state.remainingPool.length){
+        state.remainingPool = Array.from({length: discoveries.length}, (_, i) => i);
+        // shuffle
+        for (let i = state.remainingPool.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [state.remainingPool[i], state.remainingPool[j]] = [state.remainingPool[j], state.remainingPool[i]];
+        }
+      }
+    }
+
+    function pickFromPoolAvoidImmediateRepeat(){
+      initPoolIfNeeded();
+      if (!state.remainingPool.length) return pickRandomIndexAvoidRepeat();
+
+      // If the next in pool matches lastIndex, swap with a later one if possible
+      let idx = state.remainingPool[state.remainingPool.length - 1];
+      if (idx === state.lastIndex && state.remainingPool.length > 1){
+        const swapPos = Math.floor(Math.random() * (state.remainingPool.length - 1));
+        const tmp = state.remainingPool[swapPos];
+        state.remainingPool[swapPos] = idx;
+        state.remainingPool[state.remainingPool.length - 1] = tmp;
+        idx = state.remainingPool[state.remainingPool.length - 1];
+      }
+      state.remainingPool.pop();
+      return idx;
+    }
+
+    function showDiscovery(index){
+      if (index < 0) return;
+
+      const d = discoveries[index];
+      $("title").textContent = d.title;
+      $("topic").textContent = d.topic;
+      $("institution").textContent = d.institution;
+
+      $("topicBadge").textContent = d.topic;
+      $("topicPill").textContent = `Topic: ${d.topic}`;
+
+      animateCard();
+      state.lastIndex = index;
+    }
+
+    function maybeShowBadge(){
+      const badge = getBadgeForMilestone(state.discoveredCount);
+      if (!badge) return;
+
+      // side-panel badge line
+      const slot = $("badgeSlot");
+      slot.innerHTML = `
+        <div class="badge" aria-label="Badge unlocked">
+          <span class="medal" aria-hidden="true"></span>
+          <span>${badge.emoji} <strong>${badge.title}</strong> — unlocked at ${state.discoveredCount}</span>
+        </div>
+      `;
+
+      // toast
+      showToast(badge.emoji, badge.title, badge.body);
+    }
+
+    let toastTimer = null;
+    function showToast(emoji, title, body){
+      const toast = $("toast");
+      $("toastEmoji").textContent = emoji;
+      $("toastTitle").textContent = title;
+      $("toastBody").textContent = body;
+
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function discoverNext({surprise=false} = {}){
+      const total = discoveries.length;
+      if (total === 0){
+        showToast("⚠️", "No data yet", "Add discoveries to the array to start exploring.");
+        return;
+      }
+
+      // Count only after the first “real” reveal
+      state.discoveredCount = clamp(state.discoveredCount + 1, 0, total);
+      state.shownOnce = true;
+
+      // pick index
+      let idx;
+      if (state.noRepeatUntilExhausted){
+        idx = pickFromPoolAvoidImmediateRepeat();
+      } else {
+        idx = pickRandomIndexAvoidRepeat();
+      }
+
+      // “Surprise Me” uses same mechanism; it just feels different via toast copy
+      if (surprise){
+        showToast("🎲", "Surprise topic!", "Jumping to something unexpected—enjoy the discovery.");
+      }
+
+      showDiscovery(idx);
+      setText();
+      maybeShowBadge();
+
+      // If they hit 100% and array is 100, celebrate
+      if (state.discoveredCount === total && total >= 10){
+        showToast("🏁", "Explorer complete!", "You’ve seen them all. Want another round? Hit Reset and go again.");
+      }
+    }
+
+    function resetProgress(){
+      state.discoveredCount = 0;
+      state.lastIndex = -1;
+      state.shownOnce = false;
+      state.remainingPool = [];
+      $("badgeSlot").innerHTML = "";
+      setText();
+      showToast("🔄", "Reset!", "Discovery count cleared. Another breakthrough awaits!");
+    }
+
+    // Wire up UI
+    $("discoverBtn").addEventListener("click", () => discoverNext({surprise:false}));
+    $("surpriseBtn").addEventListener("click", () => discoverNext({surprise:true}));
+    $("resetBtn").addEventListener("click", resetProgress);
+
+    // Initialize
+    setText();
+
+    // Optional: start with an initial card (uncomment to auto-reveal on load)
+    // discoverNext();
+
+  </script>
+</body>
+</html>
