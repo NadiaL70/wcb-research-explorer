@@ -459,9 +459,6 @@
             <button class="btn-primary" id="discoverBtn" type="button">
               Discover Another Breakthrough
             </button>
-            <button class="btn-secondary" id="surpriseBtn" type="button" title="Random topic jump!">
-              Surprise Me
-            </button>
           </div>
         </div>
 
@@ -749,7 +746,6 @@ function discoverNext({surprise=false} = {}){
     console.log("WCB Research Explorer loaded ✅", discoveries.length, "discoveries");
 
     $("discoverBtn").addEventListener("click", () => discoverNext({surprise:false}));
-    $("surpriseBtn").addEventListener("click", () => discoverNext({surprise:true}));
     $("resetBtn").addEventListener("click", resetProgress);
 
     setText();
@@ -759,6 +755,7 @@ function discoverNext({surprise=false} = {}){
 </script>
 </body>
 </html>
+
 
 
 
