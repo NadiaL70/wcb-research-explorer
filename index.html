@@ -677,16 +677,65 @@ const discoveries = [
     state.lastIndex = index;
   }
 
-  function discoverNext({surprise=false} = {}){
-    const total = discoveries.length;
-    if (total === 0) return;
+function normalizeTopic(t){
+  return (t || "").trim().toLowerCase();
+}
 
-    state.discoveredCount = clamp(state.discoveredCount + 1, 0, total);
+function pickRandomDifferentTopic(){
+  const current = normalizeTopic($("topic").textContent);
+  const topics = Array.from(new Set(discoveries.map(d => normalizeTopic(d.topic)).filter(Boolean)));
 
-    const idx = pickRandomIndexAvoidRepeat();
-    showDiscovery(idx);
-    setText();
+  if (topics.length === 0) return "";
+  if (topics.length === 1) return topics[0];
+
+  let t = topics[Math.floor(Math.random() * topics.length)];
+  // avoid picking the currently displayed topic if possible
+  if (t === current) {
+    t = topics[(topics.indexOf(t) + 1 + Math.floor(Math.random() * (topics.length - 1))) % topics.length];
   }
+  return t;
+}
+
+function discoverNext({surprise=false} = {}){
+  const total = discoveries.length;
+  if (total === 0) return;
+
+  state.discoveredCount = clamp(state.discoveredCount + 1, 0, total);
+
+  let idx = -1;
+
+  if (surprise) {
+    // 1) pick a random topic (different from current if possible)
+    const chosenTopic = pickRandomDifferentTopic();
+
+    // 2) filter discoveries to that topic
+    const candidates = discoveries
+      .map((d, i) => ({d, i}))
+      .filter(x => normalizeTopic(x.d.topic) === chosenTopic)
+      .map(x => x.i);
+
+    // 3) choose a random candidate (still avoid immediate repeat if possible)
+    if (candidates.length === 1) {
+      idx = candidates[0];
+    } else if (candidates.length > 1) {
+      idx = candidates[Math.floor(Math.random() * candidates.length)];
+      if (idx === state.lastIndex) {
+        idx = candidates[(candidates.indexOf(idx) + 1) % candidates.length];
+      }
+    } else {
+      // fallback if something weird happens
+      idx = pickRandomIndexAvoidRepeat();
+    }
+  } else {
+    // normal: any discovery, avoid immediate repeat
+    idx = pickRandomIndexAvoidRepeat();
+  }
+
+  showDiscovery(idx);
+  setText();
+
+
+}
 
   function resetProgress(){
     state.discoveredCount = 0;
@@ -710,6 +759,7 @@ const discoveries = [
 </script>
 </body>
 </html>
+
 
 
 
